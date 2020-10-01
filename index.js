@@ -1,8 +1,11 @@
 const mongoose = require('mongoose')
 const { ApolloServer} = require('apollo-server');
 
-const URL = ' mongodb://127.0.0.1:27017/collab'
+//const URL = ' mongodb://127.0.0.1:27017/collab'
+//local 
 
+const URL = 'mongodb+srv://admin:admin123@hari-mongoatlas.xssfv.mongodb.net/Hari-MongoAtlas?retryWrites=true&w=majority'
+//live
 
 mongoose.connect(URL, {useNewUrlParser : true},(err) => {
     if (err) {
@@ -14,7 +17,7 @@ mongoose.connect(URL, {useNewUrlParser : true},(err) => {
   })
 
 
-  const PORT = 4000; 
+  const PORT=  process.env.PORT ||4000; 
 
 const typeDefs = require('./graphql/schema/typedefs')
 const resolvers = require('./graphql/schema/rootresolver')
