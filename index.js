@@ -1,5 +1,11 @@
 const mongoose = require('mongoose')
 const { ApolloServer} = require('apollo-server');
+const express = require('express');
+const bodyparser = require('body-parser');
+const graphqlHttp = require('express-graphql').graphqlHTTP;
+const app = express();
+app.use(bodyparser.json());
+
 
 //const URL = ' mongodb://127.0.0.1:27017/collab'
 //local 
@@ -34,6 +40,6 @@ const server = new ApolloServer({
         },
 });
 
-server.listen().then(({ url}) => {
-    console.log(`🚀 Server ready at ${url}`);
+server.listen(PORT).then(({ url}) => {
+    console.log(`🚀 Server ready at URL :  ${url} in port : ${PORT}`);
 });
