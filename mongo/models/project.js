@@ -1,14 +1,6 @@
 const mongoose = require('mongoose')
 
-const CommentSchema = mongoose.Schema({
-  content: {
-    type: String,
-  },
-  created_at :{
-    type: Date,
-    default: new Date()
-  }
-})
+const CommentSchema = require('../models/comment')
 
 const ProjectSchema = mongoose.Schema({
   title: {
@@ -21,12 +13,14 @@ const ProjectSchema = mongoose.Schema({
     type: String,
   },
   team_assigned:{
-    type: mongoose.Types.ObjectId,
+    type: [mongoose.Types.ObjectId],
     ref:'team',
+    default:[],
   },
   member_assigned:{
-    type: mongoose.Types.ObjectId,
+    type: [mongoose.Types.ObjectId],
     ref:'member',
+    default:[],
   },
   start_date :{
     type:String,
@@ -35,10 +29,10 @@ const ProjectSchema = mongoose.Schema({
     type:String,
   },
   comments :{
-    type:[CommentSchema],
-    default:[]
+    type: [mongoose.Types.ObjectId],
+    ref:'comment',
+    default:[],
   }
 })
-
 
 module.exports = mongoose.model('project', ProjectSchema);

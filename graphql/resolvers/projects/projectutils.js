@@ -18,7 +18,19 @@ const findProjectById = async (projectId) =>{
     }
 }
 
-
+const findProjectAlreadyAssigned = async (newProjectId,existingProjects) =>{
+    try {
+       for(i=0;i<existingProjects.length;i++){
+          if(existingProjects[i].toString()==newProjectId.toString()){
+              return true
+          }
+       }
+       return false
+    } catch (error) {
+        throw new Error("Error while finding project already assigned to Member : "+error)
+    }
+}
 
 exports.findProjectByIds = findProjectByIds ;
 exports.findProjectById = findProjectById ;
+exports.findProjectAlreadyAssigned = findProjectAlreadyAssigned;

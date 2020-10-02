@@ -18,5 +18,6 @@ const findTeamById = async (teamId) =>{
     }
 }
 
+
 exports.findTeamByIds = findTeamByIds ;
 exports.findTeamById = findTeamById ;

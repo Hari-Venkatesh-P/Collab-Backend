@@ -13,14 +13,15 @@ module.exports = gql`
         }
         type Comment{
             _id:ID!
-            content:String
-            created_at:String
+            content:String!
+            created_by : Member!
+            created_at:String!
         }
         type Team{
             _id:ID!
             name:String!
-            team_members:[Member]!
-            assigned_projects :[Project]!
+            team_members:[Member]
+            assigned_projects :[Project]
 
         }
         type Project{
@@ -28,11 +29,11 @@ module.exports = gql`
             title:String!
             description:String!
             status:String!
-            team_assigned:Team!
-            member_assigned:Member!
+            team_assigned:[Team]
+            member_assigned:[Member]
             start_date:String!
             end_date:String!
-            comments:[Comment]!
+            comments:[Comment]
         }
         type RootQuery{
             getMembers: [Member],
@@ -45,13 +46,16 @@ module.exports = gql`
             getProjectsByTeam(team:ID!):[Project],
         }
         type RootMutation {
-            createMember(name:String!,email:String!,mobile:String!,team:ID!,password:String!,role:String!): Member!
+            createMember(name:String!,email:String!,mobile:String!,team:ID!,password:String!): Member!
             editMember(name:String!,email:String!,mobile:String!): Member!
             deleteMember(email:String!): String!
             resetPassword(email:String!,currentpassword:String!,newpassword:String!): Member!
             createTeam(name:String!): Team!
-            createProject(title:String!,description:String!,team_assigned:ID!,member_assigned:ID!,start_date:String!,end_date:String!): Project!
-            updateProjectStatus(id:ID!,status:String,content:String):Project!
+            createProject(title:String!,description:String!,start_date:String!,end_date:String!): Project!
+            editProject(id:ID!,description:String!,start_date:String!,end_date:String!) : Project!
+            deleteProject(id:ID!) : String!
+            assignProjectToMember(projectId:ID!,teamId:ID!,memberId:ID):Project!
+            updateProjectStatus(id:ID!,status:String!,content:String,created_by:ID!):Project!
         }
         
         schema{

@@ -21,7 +21,7 @@ module.exports = {
                     mobile :   args.mobile,
                     team:args.team,
                     password: hashedPassword,
-                    role: args.role
+                    role: "MEMBER"
                 })
                 const result = await member.save()
                 requestedteam.team_members.push(result._id)
