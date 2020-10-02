@@ -14,6 +14,11 @@ const MemberSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref:'team',
   },
+  assigned_projects:{
+    type: [mongoose.Types.ObjectId],
+    ref:'project',
+    default:[],
+  },
   password:{
     type: String
   },
