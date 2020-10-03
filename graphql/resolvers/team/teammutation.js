@@ -13,9 +13,16 @@ module.exports = {
             if(existingTeam.length==0){
                 const team = new Team({
                     name : args.name,
+                    description:args.description,
+                    speciality:args.speciality,
+                    created_at : new Date().toISOString()
                 })
                 const result = await team.save()
-                return result
+                return {
+                    ...result._doc,
+                    team_strength:result.team_members.length,
+                    project_count:result.assigned_projects.length
+                }
             }else{
                 throw new UserInputError('Team already Exists')
             }

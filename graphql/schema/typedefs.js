@@ -20,9 +20,13 @@ module.exports = gql`
         type Team{
             _id:ID!
             name:String!
+            description:String!
+            speciality:String!
             team_members:[Member]
             assigned_projects :[Project]
-
+            created_at : String!,
+            team_strength:Int
+            project_count:Int
         }
         type Project{
             _id:ID!
@@ -50,7 +54,7 @@ module.exports = gql`
             editMember(name:String!,email:String!,mobile:String!): Member!
             deleteMember(email:String!): String!
             resetPassword(email:String!,currentpassword:String!,newpassword:String!): Member!
-            createTeam(name:String!): Team!
+            createTeam(name:String!,description:String!,speciality:String!): Team!
             createProject(title:String!,description:String!,start_date:String!,end_date:String!): Project!
             editProject(id:ID!,description:String!,start_date:String!,end_date:String!) : Project!
             deleteProject(id:ID!) : String!

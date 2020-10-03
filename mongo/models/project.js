@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 
-const CommentSchema = require('../models/comment')
-
 const ProjectSchema = mongoose.Schema({
   title: {
     type: String,
@@ -32,6 +30,10 @@ const ProjectSchema = mongoose.Schema({
     type: [mongoose.Types.ObjectId],
     ref:'comment',
     default:[],
+  },
+  created_at : {
+    type: Date,
+    default : new Date()
   }
 })
 

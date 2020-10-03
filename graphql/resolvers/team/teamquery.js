@@ -13,7 +13,9 @@ module.exports = {
                 return{
                     ...team._doc , 
                     team_members:findMemberByIds(team.team_members),
-                    assigned_projects:findProjectByIds(team.assigned_projects)
+                    assigned_projects:findProjectByIds(team.assigned_projects),
+                    team_strength:team.team_members.length,
+                    project_count:team.assigned_projects.length
                 }
             })
         } catch (error) {
@@ -25,7 +27,10 @@ module.exports = {
             const team = await Team.findOne({_id:args.id})
                 return{
                     ...team._doc , 
-                    team_members:findMemberByIds(team.team_members)
+                    team_members:findMemberByIds(team.team_members),
+                    assigned_projects:findProjectByIds(team.assigned_projects),
+                    team_strength:team.team_members.length,
+                    project_count:team.assigned_projects.length
                 }
         } catch (error) {
             throw new Error(error)

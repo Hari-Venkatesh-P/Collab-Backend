@@ -5,6 +5,12 @@ const TeamSchema = mongoose.Schema({
     name: {
       type: String,
     },
+    description: {
+      type: String,
+    },
+    speciality: {
+      type: String,
+    },
     team_members:{
         type: [mongoose.Types.ObjectId],
         ref:'member',
@@ -14,7 +20,10 @@ const TeamSchema = mongoose.Schema({
       type: [mongoose.Types.ObjectId],
       ref:'project',
       default:[],
-  }
+    },created_at : {
+      type : String,
+      default : new Date().toISOString()
+    }
   })
 
   module.exports = mongoose.model('team', TeamSchema);
