@@ -1,4 +1,6 @@
 const Team = require('../../../mongo/models/team')
+const { findMemberByIds } = require('../member/memberutils')
+const { findProjectByIds } = require('../projects/projectutils')
 
 const findTeamByIds = async (teamIds) =>{
     try {
@@ -12,7 +14,14 @@ const findTeamByIds = async (teamIds) =>{
 const findTeamById = async (teamId) =>{
     try {
         const team= await Team.findOne({_id:teamId})
-        return team
+        const project_count = await findProjectByIds(team.projects_assigned)
+        const team_strength = await findMemberByIds(team.team_members)
+
+        return {
+            ...team._doc,
+            project_count : project_count.length,
+            team_strength : team_strength.length
+        }
     } catch (error) {
         throw new Error("Error in find team by id : "+error)
     }

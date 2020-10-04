@@ -9,13 +9,13 @@ module.exports = {
     getTeams: async (parent, args) =>{
         try {
             const teamLists = await Team.find()
-            return teamLists.map(team=>{
+            return teamLists.map(async team=>{
+                const team_strength = await findMemberByIds(team.team_members)
+                const project_count = await findProjectByIds(team.assigned_projects)
                 return{
                     ...team._doc , 
-                    team_members:findMemberByIds(team.team_members),
-                    assigned_projects:findProjectByIds(team.assigned_projects),
-                    team_strength:team.team_members.length,
-                    project_count:team.assigned_projects.length
+                    team_strength: team_strength.length ,
+                    project_count:project_count.length
                 }
             })
         } catch (error) {
@@ -25,12 +25,14 @@ module.exports = {
     getTeamById: async (parent, args) =>{
         try {
             const team = await Team.findOne({_id:args.id})
+            const  team_strength = await findMemberByIds(team.team_members)
+            const  project_count = await findProjectByIds(team.assigned_projects)
                 return{
                     ...team._doc , 
                     team_members:findMemberByIds(team.team_members),
                     assigned_projects:findProjectByIds(team.assigned_projects),
-                    team_strength:team.team_members.length,
-                    project_count:team.assigned_projects.length
+                    team_strength:team_strength.length,
+                    project_count:project_count.length
                 }
         } catch (error) {
             throw new Error(error)

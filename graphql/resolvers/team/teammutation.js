@@ -6,6 +6,12 @@ const bcrypt = require('bcryptjs')
 
 const Team = require('../../../mongo/models/team')
 
+
+const { findMemberByIds} = require('../member/memberutils')
+
+const { findProjectByIds} = require('../projects/projectutils')
+
+
 module.exports = {
     createTeam: async (parent, args) =>{
         try {
@@ -20,8 +26,8 @@ module.exports = {
                 const result = await team.save()
                 return {
                     ...result._doc,
-                    team_strength:result.team_members.length,
-                    project_count:result.assigned_projects.length
+                    team_strength: 0,
+                    project_count: 0 
                 }
             }else{
                 throw new UserInputError('Team already Exists')

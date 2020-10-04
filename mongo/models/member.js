@@ -10,6 +10,15 @@ const MemberSchema = mongoose.Schema({
   mobile:{
     type: String,
   },
+  gender:{
+    type: String,
+  },
+  address:{
+    type: String,
+  },
+  dob:{
+    type: String,
+  },
   team:{
     type: mongoose.Types.ObjectId,
     ref:'team',

@@ -7,13 +7,7 @@ const { findTeamById } = require('../team/teamutils')
 const findMemberByIds = async (memeberIds) =>{
     try {
         const memberList = await Members.find({_id:{$in:memeberIds}})
-        return memberList.map(member=>{
-            return {
-                ...member._doc,
-                assigned_projects: findProjectByIds(member.assigned_projects),
-                team: findTeamById(member.team)
-            }
-        })
+        return memberList
     } catch (error) {
         throw new Error("Error in findMemberByIds   :"+error)
     }

@@ -8,10 +8,12 @@ module.exports = {
     getMembers: async (parent, args) =>{
         try {
             const memberList = await Member.find()
-            return memberList.map(member=>{
+            var project_count
+            return memberList.map(async member =>{
+                project_count = await findProjectByIds(member.assigned_projects)
                 return {
                     ...member._doc,
-                    project_count: member.assigned_projects.length,
+                    project_count: project_count.length,
                     team: findTeamById(member.team)
                 }
             })
@@ -21,10 +23,12 @@ module.exports = {
     },
     getMemberById: async (parent, args) =>{
         try {
-            const member = await  findMemberById(args.id)
+            const member = await  Member.findOne({_id:args.id})
+            const assigned_projects = await findProjectByIds(member.assigned_projects)
             return {
                 ...member._doc,
-                assigned_projects: findProjectByIds(member.assigned_projects),
+                project_count: assigned_projects.length,
+                assigned_projects : assigned_projects,
                 team: findTeamById(member.team)
             }
         } catch (error) {
