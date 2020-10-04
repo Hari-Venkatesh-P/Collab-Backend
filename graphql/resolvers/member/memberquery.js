@@ -11,7 +11,7 @@ module.exports = {
             return memberList.map(member=>{
                 return {
                     ...member._doc,
-                    assigned_projects: findProjectByIds(member.assigned_projects),
+                    project_count: member.assigned_projects.length,
                     team: findTeamById(member.team)
                 }
             })
@@ -22,7 +22,11 @@ module.exports = {
     getMemberById: async (parent, args) =>{
         try {
             const member = await  findMemberById(args.id)
-            return member
+            return {
+                ...member._doc,
+                assigned_projects: findProjectByIds(member.assigned_projects),
+                team: findTeamById(member.team)
+            }
         } catch (error) {
             throw new Error(error)
         }

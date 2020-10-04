@@ -10,6 +10,7 @@ module.exports = gql`
             password:String!
             team:Team!
             assigned_projects :[Project]!
+            project_count : Int!
         }
         type Comment{
             _id:ID!

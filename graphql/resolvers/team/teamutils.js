@@ -11,7 +11,7 @@ const findTeamByIds = async (teamIds) =>{
 
 const findTeamById = async (teamId) =>{
     try {
-        const team= await Team.find({_id:teamId})
+        const team= await Team.findOne({_id:teamId})
         return team
     } catch (error) {
         throw new Error("Error in find team by id : "+error)
