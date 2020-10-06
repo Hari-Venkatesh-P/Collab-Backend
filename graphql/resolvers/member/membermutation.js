@@ -80,10 +80,10 @@ module.exports = {
     },
     resetPassword: async (parent, args) =>{
         try {
-            const existingMembers = await Member.find({email:args.email})
-            if(existingMembers.length!=0){
-                if(existingMembers[0].password == args.currentpassword){
-                    const member = await Member.findOneAndUpdate({email:args.email}, {$set:{password:args.newpassword}}, {new: true});
+            const existingMembers = await Member.findOne({_id:args.id})
+            if(existingMembers!=null){
+                if(existingMembers.password == args.currentpassword){
+                    const member = await Member.findOneAndUpdate({_id:args.id}, {$set:{password:args.newpassword}}, {new: true});
                     return member
                 }else{
                     throw new UserInputError('Current Password Mismatch')

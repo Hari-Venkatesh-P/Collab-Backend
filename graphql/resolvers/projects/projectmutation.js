@@ -48,11 +48,9 @@ module.exports = {
                 }else{
                     var isProjectAlreadyAssignedToTeam = await findProjectAlreadyAssigned(projectToBeAssigned._id,teamToBeAssigned.assigned_projects)
                     if(!isProjectAlreadyAssignedToTeam){
-                        console.log('Project assigned to the team')
                         teamToBeAssigned.assigned_projects.push(projectToBeAssigned._id)
                         await teamToBeAssigned.save()
                     }
-                    console.log('Project assigned to the member')
                     memberToBeAssigned.assigned_projects.push(projectToBeAssigned._id)
                     await memberToBeAssigned.save()
                     projectToBeAssigned.status = "ASSIGNED"
@@ -80,11 +78,11 @@ module.exports = {
                     existingProject.status = "DELAYED"
                     const comment_id = await createComment(args.content,args.created_by)
                     existingProject.comments.push(comment_id)
-                }else{
-                    throw new UserInputError('Comment is Mandatory')
                 }
-                if(args.status=="COMPLETED"){
+                else if(args.status=="COMPLETED"){
                     existingProject.status = "COMPLETED"
+                }else{
+                    throw new UserInputError('Comment is mandatory')
                 }
                 const updatedProject = await existingProject.save()
                 return {
@@ -127,6 +125,21 @@ module.exports = {
             if(projectPresent.length!=0){
                 const project = await Project.remove({_id:args.id})
                 return "Deleted Succesfully"
+            }else{
+                throw new UserInputError('No Such Project Exists')
+            }
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+    deleteMemberFromProject: async (parent, args) =>{
+        try {
+            const projectPresent = await Project.findOne({_id:args.id})
+            if(projectPresent!=null){
+                const updatedMemberList = projectPresent.member_assigned.filter((member)=> member._id != args.memberId)
+                projectPresent.member_assigned = updatedMemberList
+                await projectPresent.save()
+                return "Member Deleted From Project"
             }else{
                 throw new UserInputError('No Such Project Exists')
             }

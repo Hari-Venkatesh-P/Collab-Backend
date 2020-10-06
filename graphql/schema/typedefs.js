@@ -60,12 +60,13 @@ module.exports = gql`
             createMember(name:String!,email:String!,mobile:String!,address:String!,gender:String!,dob:String!,password:String!,team:ID!): Member!
             editMember(id:ID!,name:String!,mobile:String!,address:String!): Member!
             deleteMember(id:ID!): String!
-            resetPassword(email:String!,currentpassword:String!,newpassword:String!): Member!
+            resetPassword(id:ID!,currentpassword:String!,newpassword:String!): Member!
             createTeam(name:String!,description:String!,speciality:String!): Team!
             createProject(title:String!,description:String!,start_date:String!,end_date:String!): Project!
             editProject(id:ID!,description:String!,start_date:String!,end_date:String!) : Project!
             deleteProject(id:ID!) : String!
             assignProjectToMember(projectId:ID!,teamId:ID!,memberId:ID):Project!
+            deleteMemberFromProject(id:ID!,memberId:ID!):String!
             updateProjectStatus(id:ID!,status:String!,content:String,created_by:ID!):Project!
         }
         

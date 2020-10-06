@@ -38,6 +38,10 @@ const server = new ApolloServer({
           }
           return err;
         },
+        context: ({ req }) => {
+          const token = req.headers.authorization ;
+          return { token };
+        },
 });
 
 server.listen(PORT).then(({ url}) => {

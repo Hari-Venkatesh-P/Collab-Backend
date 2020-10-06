@@ -7,8 +7,9 @@ const {getCommentByIds} = require('../projects/commentutils')
 const { findById } = require('../../../mongo/models/project')
 
 module.exports = {
-    getProjects: async (parent, args) =>{
+    getProjects: async (parent, args ,  context) =>{
         try {
+            console.log(context , "Header Checking")
             const projectLists = await Project.find()
             return projectLists.map(project=>{
                 return{
@@ -50,10 +51,12 @@ module.exports = {
             const project = await Project.findOne({_id:args.id})
             const team_assigned  = await findTeamByIds(project.team_assigned)
             const member_assigned = await findMemberByIds(project.member_assigned)
+            const comments = await getCommentByIds(project.comments)
             return {
                 ...project._doc,
                 team_assigned : team_assigned,
-                member_assigned : member_assigned
+                member_assigned : member_assigned,
+                comments : comments,
             }
         } catch (error) {
             throw new Error(error)
