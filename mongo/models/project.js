@@ -32,8 +32,8 @@ const ProjectSchema = mongoose.Schema({
     default:[],
   },
   created_at : {
-    type: Date,
-    default : new Date()
+    type: String,
+    default : new Date().toDateString()
   }
 })
 

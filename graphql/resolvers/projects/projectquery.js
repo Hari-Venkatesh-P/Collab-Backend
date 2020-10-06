@@ -1,8 +1,10 @@
 const Project = require('../../../mongo/models/project')
+const Member = require('../../../mongo/models/member')
 
-const {findTeamByIds} = require('../team/teamutils')
+const {findTeamByIds , findTeamById} = require('../team/teamutils')
 const {findMemberByIds} = require('../member/memberutils')
 const {getCommentByIds} = require('../projects/commentutils')
+const { findById } = require('../../../mongo/models/project')
 
 module.exports = {
     getProjects: async (parent, args) =>{
@@ -45,8 +47,14 @@ module.exports = {
     },
     getProjectById: async (parent, args) =>{
         try {
-            const project = await Project.findOne({_id:args.id}).populate('team_assigned').populate('member_assigned')
-            return project
+            const project = await Project.findOne({_id:args.id})
+            const team_assigned  = await findTeamByIds(project.team_assigned)
+            const member_assigned = await findMemberByIds(project.member_assigned)
+            return {
+                ...project._doc,
+                team_assigned : team_assigned,
+                member_assigned : member_assigned
+            }
         } catch (error) {
             throw new Error(error)
         }

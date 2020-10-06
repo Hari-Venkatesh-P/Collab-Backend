@@ -13,6 +13,7 @@ module.exports = {
                 project_count = await findProjectByIds(member.assigned_projects)
                 return {
                     ...member._doc,
+                    assigned_projects : project_count,
                     project_count: project_count.length,
                     team: findTeamById(member.team)
                 }

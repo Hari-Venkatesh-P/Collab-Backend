@@ -22,6 +22,20 @@ module.exports = {
             throw new Error(error)
         }
     },
+    getTeamsAndMembers: async (parent, args) =>{
+        try {
+            const teamLists = await Team.find()
+            return teamLists.map(async team=>{
+                const team_members = await findMemberByIds(team.team_members)
+                return{
+                    ...team._doc , 
+                    team_members: team_members ,
+                }
+            })
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
     getTeamById: async (parent, args) =>{
         try {
             const team = await Team.findOne({_id:args.id})

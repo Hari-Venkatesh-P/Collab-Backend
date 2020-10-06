@@ -14,9 +14,8 @@ const findTeamByIds = async (teamIds) =>{
 const findTeamById = async (teamId) =>{
     try {
         const team= await Team.findOne({_id:teamId})
-        const project_count = await findProjectByIds(team.projects_assigned)
+        const project_count = await findProjectByIds(team.assigned_projects)
         const team_strength = await findMemberByIds(team.team_members)
-
         return {
             ...team._doc,
             project_count : project_count.length,

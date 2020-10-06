@@ -37,6 +37,7 @@ module.exports = gql`
             _id:ID!
             title:String!
             description:String!
+            created_at : String
             status:String!
             team_assigned:[Team]
             member_assigned:[Member]
@@ -45,9 +46,10 @@ module.exports = gql`
             comments:[Comment]
         }
         type RootQuery{
-            getMembers: [Member],
+            getMembers(staus:String): [Member],
             getMemberById(id:ID!) : Member,
             getTeams:[Team],
+            getTeamsAndMembers : [Team],
             getTeamById(id:ID!):Team
             getProjects:[Project],
             getProjectById(id:ID!):Project

@@ -55,7 +55,9 @@ module.exports = {
                     console.log('Project assigned to the member')
                     memberToBeAssigned.assigned_projects.push(projectToBeAssigned._id)
                     await memberToBeAssigned.save()
+                    projectToBeAssigned.status = "ASSIGNED"
                     projectToBeAssigned.member_assigned.push(memberToBeAssigned._id)
+                    projectToBeAssigned.team_assigned.push(teamToBeAssigned._id)
                     await projectToBeAssigned.save()
                     return {
                         ...projectToBeAssigned._doc , 
