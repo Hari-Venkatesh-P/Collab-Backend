@@ -9,7 +9,6 @@ const { findById } = require('../../../mongo/models/project')
 module.exports = {
     getProjects: async (parent, args ,  context) =>{
         try {
-            console.log(context , "Header Checking")
             const projectLists = await Project.find()
             return projectLists.map(project=>{
                 return{

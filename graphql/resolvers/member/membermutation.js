@@ -2,7 +2,9 @@ const {
     AuthenticationError,
     UserInputError,
   } = require('apollo-server');
+
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
 
 const Member = require('../../../mongo/models/member')
 const Team = require('../../../mongo/models/team')
@@ -90,6 +92,26 @@ module.exports = {
                 }
             }else{
                 throw new UserInputError('No Such User Exists')
+            }
+        } catch (error) {
+            throw new Error(error)
+        }
+    },
+    login: async (parent, args) =>{
+        try {
+            const existingMember = await Member.findOne({email:args.email})
+            if(existingMember!=null){
+                if(existingMember.password == args.password){
+                    const  token = await jwt.sign({name:existingMember.name,id:existingMember._id,role:existingMember.role}, 'collabs-encryption')
+                    return {
+                        ...existingMember._doc,
+                        token:token
+                    }
+                }else{
+                    throw new AuthenticationError('Password Mismatch')
+                }
+            }else{
+                throw new AuthenticationError('No Such User Email Exists')
             }
         } catch (error) {
             throw new Error(error)

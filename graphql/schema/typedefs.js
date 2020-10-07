@@ -14,7 +14,8 @@ module.exports = gql`
             team:Team!
             assigned_projects :[Project]!
             created_at : String
-            project_count : Int
+            project_count : Int,
+            token:String!,
         }
         type Comment{
             _id:ID!
@@ -57,6 +58,7 @@ module.exports = gql`
             getProjectsByTeam(team:ID!):[Project],
         }
         type RootMutation {
+            login(email:String!,password:String!):Member!
             createMember(name:String!,email:String!,mobile:String!,address:String!,gender:String!,dob:String!,password:String!,team:ID!): Member!
             editMember(id:ID!,name:String!,mobile:String!,address:String!): Member!
             deleteMember(id:ID!): String!
