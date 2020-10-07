@@ -52,7 +52,7 @@ module.exports = gql`
             getTeams:[Team],
             getTeamsAndMembers : [Team],
             getTeamById(id:ID!):Team
-            getProjects:[Project],
+            getProjects(id:ID):[Project],
             getProjectById(id:ID!):Project
             getProjectsByMember(member:ID!):[Project],
             getProjectsByTeam(team:ID!):[Project],

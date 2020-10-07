@@ -9,7 +9,12 @@ const { findById } = require('../../../mongo/models/project')
 module.exports = {
     getProjects: async (parent, args ,  context) =>{
         try {
-            const projectLists = await Project.find()
+            var projectLists
+            if(args.id && args.id !=null){
+                projectLists = await Project.find({member_assigned:{$in:args.id}})
+            }else{
+               projectLists = await Project.find()
+            }
             return projectLists.map(project=>{
                 return{
                     ...project._doc , 
