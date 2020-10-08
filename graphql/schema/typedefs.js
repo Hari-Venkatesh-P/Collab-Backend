@@ -47,7 +47,7 @@ module.exports = gql`
             comments:[Comment]
         }
         type RootQuery{
-            getMembers(staus:String): [Member],
+            getMembers(id:ID): [Member],
             getMemberById(id:ID!) : Member,
             getTeams:[Team],
             getTeamsAndMembers : [Team],

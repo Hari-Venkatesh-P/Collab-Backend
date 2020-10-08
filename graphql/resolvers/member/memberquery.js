@@ -7,7 +7,7 @@ const {findTeamById} = require('../team/teamutils')
 module.exports = {
     getMembers: async (parent, args) =>{
         try {
-            const memberList = await Member.find()
+            const memberList = await Member.find({ _id: { $ne: args.id } })
             var project_count
             return memberList.map(async member =>{
                 project_count = await findProjectByIds(member.assigned_projects)

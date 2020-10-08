@@ -53,7 +53,7 @@ module.exports = {
     editMember: async (parent, args) =>{
         try {
             const existingMobile = await Member.findOne({mobile:args.mobile})
-            if(existingMobile){
+            if(existingMobile && existingMobile._id != args.id){
                 throw new UserInputError('Mobile Already Exists')
             }
             const existingMembers = await Member.find({_id:args.id})
@@ -103,8 +103,10 @@ module.exports = {
             if(existingMember!=null){
                 if(existingMember.password == args.password){
                     const  token = await jwt.sign({name:existingMember.name,id:existingMember._id,role:existingMember.role}, 'collabs-encryption')
+                    const team = findTeamById(existingMember.team)
                     return {
-                        ...existingMember._doc,
+                        ...existingMember._doc, 
+                        team : team,
                         token:token
                     }
                 }else{
