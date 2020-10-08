@@ -71,9 +71,16 @@ module.exports = gql`
             deleteMemberFromProject(id:ID!,memberId:ID!):String!
             updateProjectStatus(id:ID!,status:String!,content:String,created_by:ID!):Project!
         }
+
+        type RootSubscription {
+            teamAdded: String!
+            memberAdded: String!
+            projectAdded:String!
+        }
         
         schema{
             query:RootQuery
             mutation:RootMutation
+            subscription:RootSubscription
         }
     `;

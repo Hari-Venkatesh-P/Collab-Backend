@@ -13,6 +13,8 @@ const {findTeamById} = require('../team/teamutils')
 const {findProjectByIds} = require('../projects/projectutils')
 
 
+const {pubsub,topics} = require('../subscription')
+
 module.exports = {
     createMember: async (parent, args) =>{
         try {
@@ -38,6 +40,7 @@ module.exports = {
                 const result = await member.save()
                 requestedteam.team_members.push(result._id)
                 await requestedteam.save()
+                await pubsub.publish(topics.MEMBER_ADDED, { memberAdded: "New Joinee : "+args.name+" has joined us ..!" })
                 return {
                     ...result._doc,
                     team  : findTeamById(result.team),

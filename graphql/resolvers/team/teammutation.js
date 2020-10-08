@@ -5,7 +5,7 @@ const {
 const bcrypt = require('bcryptjs')
 
 const Team = require('../../../mongo/models/team')
-
+const {pubsub,topics} = require('../subscription')
 
 const { findMemberByIds} = require('../member/memberutils')
 
@@ -24,6 +24,7 @@ module.exports = {
                     created_at : new Date().toISOString()
                 })
                 const result = await team.save()
+                await pubsub.publish(topics.TEAM_ADDED, { teamAdded: args.name+" has been created !" })
                 return {
                     ...result._doc,
                     team_strength: 0,

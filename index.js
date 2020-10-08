@@ -38,9 +38,16 @@ const server = new ApolloServer({
           }
           return err;
         },
-        context: ({ req }) => {
-          const token = req.headers.authorization ;
-          return { token };
+        context: async ({ req, connection }) => {
+          if (connection) {
+            // check connection for metadata
+            return connection.context;
+          } else {
+            // check from req
+            const token = req.headers.authorization || "";
+      
+            return { token };
+          }
         },
 });
 
