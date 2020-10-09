@@ -10,8 +10,6 @@ const Member = require('../../../mongo/models/member')
 const Team = require('../../../mongo/models/team')
 
 const {findTeamById} = require('../team/teamutils')
-const {findProjectByIds} = require('../projects/projectutils')
-
 
 const {pubsub,topics} = require('../subscription')
 

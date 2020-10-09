@@ -1,5 +1,4 @@
 const {
-    AuthenticationError,
     UserInputError,
   } = require('apollo-server');
 

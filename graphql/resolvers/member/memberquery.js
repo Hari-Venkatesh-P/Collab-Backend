@@ -1,7 +1,6 @@
 const Member = require('../../../mongo/models/member')
 
 const { findProjectByIds} = require('../projects/projectutils')
-const { findMemberById} = require('../member/memberutils')
 const {findTeamById} = require('../team/teamutils')
 
 module.exports = {

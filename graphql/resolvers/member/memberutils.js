@@ -1,7 +1,6 @@
 const Members = require('../../../mongo/models/member')
 
 const {findProjectByIds} = require('../projects/projectutils')
-const { findTeamById } = require('../team/teamutils')
 
 
 const findMemberByIds = async (memeberIds) =>{
