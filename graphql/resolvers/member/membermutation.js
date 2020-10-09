@@ -2,7 +2,6 @@ const {
     AuthenticationError,
     UserInputError,
   } = require('apollo-server');
-
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 
@@ -13,9 +12,14 @@ const {findTeamById} = require('../team/teamutils')
 
 const {pubsub,topics} = require('../subscription')
 
+const logger = require('../../../lib/logger')
+
 module.exports = {
-    createMember: async (parent, args) =>{
+    createMember: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const existingMembers = await Member.find({email:args.email})
             const existingMembersWithSameMobile = await Member.find({mobile:args.mobile})
             if(existingMembersWithSameMobile.length !==0){
@@ -39,6 +43,7 @@ module.exports = {
                 requestedteam.team_members.push(result._id)
                 await requestedteam.save()
                 await pubsub.publish(topics.MEMBER_ADDED, { memberAdded: args.name+" has joined us ..!" })
+                logger.info("New Member is Created..")
                 return {
                     ...result._doc,
                     team  : findTeamById(result.team),
@@ -51,8 +56,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    editMember: async (parent, args) =>{
+    editMember: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const existingMobile = await Member.findOne({mobile:args.mobile})
             if(existingMobile && existingMobile._id != args.id){
                 throw new UserInputError('Mobile Already Exists')
@@ -68,8 +76,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    deleteMember: async (parent, args) =>{
+    deleteMember: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const existingMembers = await Member.find({_id:args.id})
             if(existingMembers.length!=0){
                 const member = await Member.remove({_id:args.id})
@@ -81,13 +92,17 @@ module.exports = {
             throw new Error(error)
         }
     },
-    resetPassword: async (parent, args) =>{
+    resetPassword: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const existingMembers = await Member.findOne({_id:args.id})
             if(existingMembers!=null){
-                if(existingMembers.password == args.currentpassword){
+                const isValidPassword =  await bcrypt.compare(args.currentpassword,existingMembers.password )
+                if(isValidPassword){
                     const hashedPassword = await bcrypt.hash(args.newpassword,10)
-                    const member = await Member.findOneAndUpdate({_id:args.id}, {$set:{password:args.hashedPassword}}, {new: true});
+                    const member = await Member.findOneAndUpdate({_id:args.id}, {$set:{password:hashedPassword}}, {new: true});
                     return member
                 }else{
                     throw new UserInputError('Current Password Mismatch')
@@ -103,8 +118,9 @@ module.exports = {
         try {
             const existingMember = await Member.findOne({email:args.email})
             if(existingMember!=null){
-                if(existingMember.password == args.password){
-                    const  token = await jwt.sign({name:existingMember.name,id:existingMember._id,role:existingMember.role}, 'collabs-encryption')
+                const isValidPassword =  await bcrypt.compare(args.password,existingMember.password )
+                if(isValidPassword){
+                    const  token = await jwt.sign({name:existingMember.name,id:existingMember._id,role:existingMember.role,secret:"COLLABS-SERVICES"}, 'collabs-encryption')
                     const team = findTeamById(existingMember.team)
                     return {
                         ...existingMember._doc, 

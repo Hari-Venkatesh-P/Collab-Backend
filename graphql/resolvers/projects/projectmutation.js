@@ -1,6 +1,8 @@
 const {
     UserInputError,
+    AuthenticationError,
   } = require('apollo-server');
+
 
 const Project = require('../../../mongo/models/project')
 const Team = require('../../../mongo/models/team')
@@ -11,12 +13,15 @@ const { findMemberById,findMemberByIds} = require('../member/memberutils')
 const { findTeamById,findTeamByIds} = require('../team/teamutils')
 const {findProjectAlreadyAssigned} = require('../projects/projectutils')
 const {createComment , getComment , getCommentByIds} = require('../projects/commentutils')
-
+const logger = require('../../../lib/logger')
 
 
 module.exports = {
-    createProject: async (parent, args) =>{
+    createProject: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const existingProject = await Project.find({title:args.title})
             if(existingProject.length==0){
                 const requestedteam = await Team.findOne({_id:args.team_assigned})
@@ -30,6 +35,7 @@ module.exports = {
                 })
                 const result = await project.save()
                 await pubsub.publish(topics.PROJECT_ADDED, { projectAdded: args.title+" has been scheduled ..!" })
+                logger.info("New Project is creted")
                 return result
             }else{
                 throw new UserInputError('Project already Exists')
@@ -38,8 +44,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    assignProjectToMember: async (parent, args) =>{
+    assignProjectToMember: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const projectToBeAssigned = await Project.findOne({_id:args.projectId})
             const teamToBeAssigned = await Team.findOne({_id:args.teamId})
             const memberToBeAssigned = await Member.findOne({_id:args.memberId})
@@ -72,8 +81,12 @@ module.exports = {
             throw new Error(error)
         }
     },
-    updateProjectStatus: async (parent, args) =>{
+    updateProjectStatus: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
+            logger.warn(args)
             const existingProject = await Project.findOne({_id:args.id})
             if(existingProject!=null){
                 if(args.status=="DELAYED" && args.content){
@@ -100,8 +113,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    editProject: async (parent, args) =>{
+    editProject: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const existingProject = await Project.findOne({_id:args.id})
             if(existingProject!=null){
                 existingProject.description = args.description,
@@ -121,8 +137,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    deleteProject: async (parent, args) =>{
+    deleteProject: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const projectPresent = await Project.find({_id:args.id})
             if(projectPresent.length!=0){
                 const project = await Project.remove({_id:args.id})
@@ -134,8 +153,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    deleteMemberFromProject: async (parent, args) =>{
+    deleteMemberFromProject: async (parent, args,context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const projectPresent = await Project.findOne({_id:args.id})
             if(projectPresent!=null){
                 const updatedMemberList = projectPresent.member_assigned.filter((member)=> member._id != args.memberId)

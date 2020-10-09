@@ -5,7 +5,7 @@ const {findProjectByIds} = require('../projects/projectutils')
 
 const findMemberByIds = async (memeberIds) =>{
     try {
-        const memberList = await Members.find({_id:{$in:memeberIds}})
+        const memberList = await Members.find({_id:{$in:memeberIds},role:"MEMBER"})
         return memberList
     } catch (error) {
         throw new Error("Error in findMemberByIds   :"+error)
@@ -14,7 +14,7 @@ const findMemberByIds = async (memeberIds) =>{
 
 const findMemberById = async (memberId) =>{
     try {
-        const member= await Members.findOne({_id:memberId}).populate('team')
+        const member= await Members.findOne({_id:memberId,role:"MEMBER"}).populate('team')
         return {
             ...member._doc,
             assigned_projects: findProjectByIds(member.assigned_projects)

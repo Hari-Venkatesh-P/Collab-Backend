@@ -1,29 +1,27 @@
 const mongoose = require('mongoose')
 const { ApolloServer} = require('apollo-server');
-// const express = require('express');
-// const bodyparser = require('body-parser');
-// const graphqlHttp = require('express-graphql').graphqlHTTP;
-// const app = express();
-// app.use(bodyparser.json());
+const dbconfiguration = require('./configuration/dbconfiguration')
+const dbdetails = dbconfiguration.dbdetails
+const { checkIsValidAuth} = require('./middleware/checkTokenValidation')
+const logger = require('./lib/logger')
 
-
-const URL = ' mongodb://127.0.0.1:27017/collab'
+// const URL = ' mongodb://127.0.0.1:27017/collab'
 //local 
 
-// const URL = 'mongodb+srv://admin:admin123@hari-mongoatlas.xssfv.mongodb.net/Hari-MongoAtlas?retryWrites=true&w=majority'
+
+const URL = 'mongodb+srv://'+dbdetails.username+':'+dbdetails.password+'@'+dbdetails.host+'/'+dbdetails.database+'?retryWrites=true&w=majority';
 //live
 
 mongoose.connect(URL, {useNewUrlParser : true},(err) => {
     if (err) {
-      console.log(err)
-      console.log('Error while Connecting!')
+      logger.error('Error while Connecting!' +err)
     } else {
-      console.log('Connected to Mongo DB')
+      logger.info('Connected to Mongo DB')
     }
   })
 
 
-  const PORT=  process.env.PORT || 4000; 
+const PORT=  process.env.PORT || 4000; 
 
 const typeDefs = require('./graphql/schema/typedefs')
 const resolvers = require('./graphql/schema/rootresolver')
@@ -33,6 +31,7 @@ const server = new ApolloServer({
         typeDefs, 
         resolvers,
         formatError: (err) => {
+          // logger.error("Error :"+err)
           if (err.message.startsWith("Database Error: ")) {
             return new Error('Internal server error');
           }
@@ -40,17 +39,15 @@ const server = new ApolloServer({
         },
         context: async ({ req, connection }) => {
           if (connection) {
-            // check connection for metadata
             return connection.context;
           } else {
-            // check from req
-            const token = req.headers.authorization || "";
-      
-            return { token };
+            const headerPayload = req.headers.authorization || ""
+            const isValidAuth = checkIsValidAuth(headerPayload)
+            return { isValidAuth };
           }
         },
 });
 
 server.listen(PORT).then(({ url}) => {
-    console.log(`🚀 Server ready at URL :  ${url} in port : ${PORT}`);
+     logger.info(`🚀 Server ready at URL :  ${url} in port : ${PORT}`);
 });

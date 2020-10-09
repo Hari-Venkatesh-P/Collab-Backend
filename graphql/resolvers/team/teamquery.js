@@ -1,3 +1,6 @@
+const {
+    AuthenticationError,
+  } = require('apollo-server');
 const Team = require('../../../mongo/models/team')
 
 const { findMemberByIds} = require('../member/memberutils')
@@ -6,8 +9,11 @@ const { findProjectByIds} = require('../projects/projectutils')
 
 
 module.exports = {
-    getTeams: async (parent, args) =>{
+    getTeams: async (parent, args,  context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const teamLists = await Team.find()
             return teamLists.map(async team=>{
                 const team_strength = await findMemberByIds(team.team_members)
@@ -24,8 +30,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    getTeamsAndMembers: async (parent, args) =>{
+    getTeamsAndMembers: async (parent, args,  context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const teamLists = await Team.find()
             return teamLists.map(async team=>{
                 const team_members = await findMemberByIds(team.team_members)
@@ -38,8 +47,11 @@ module.exports = {
             throw new Error(error)
         }
     },
-    getTeamById: async (parent, args) =>{
+    getTeamById: async (parent, args,  context) =>{
         try {
+            if(!context.isValidAuth){
+                throw new AuthenticationError("Forbidden Access")
+            }
             const team = await Team.findOne({_id:args.id})
             const  team_strength = await findMemberByIds(team.team_members)
             const  project_count = await findProjectByIds(team.assigned_projects)
