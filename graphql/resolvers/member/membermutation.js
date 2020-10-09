@@ -34,13 +34,13 @@ module.exports = {
                     address : args.address,
                     gender : args.gender,
                     team:args.team,
-                    password: args.password,
+                    password: hashedPassword,
                     role: "MEMBER"
                 })
                 const result = await member.save()
                 requestedteam.team_members.push(result._id)
                 await requestedteam.save()
-                await pubsub.publish(topics.MEMBER_ADDED, { memberAdded: "New Joinee : "+args.name+" has joined us ..!" })
+                await pubsub.publish(topics.MEMBER_ADDED, { memberAdded: args.name+" has joined us ..!" })
                 return {
                     ...result._doc,
                     team  : findTeamById(result.team),
@@ -88,7 +88,8 @@ module.exports = {
             const existingMembers = await Member.findOne({_id:args.id})
             if(existingMembers!=null){
                 if(existingMembers.password == args.currentpassword){
-                    const member = await Member.findOneAndUpdate({_id:args.id}, {$set:{password:args.newpassword}}, {new: true});
+                    const hashedPassword = await bcrypt.hash(args.newpassword,10)
+                    const member = await Member.findOneAndUpdate({_id:args.id}, {$set:{password:args.hashedPassword}}, {new: true});
                     return member
                 }else{
                     throw new UserInputError('Current Password Mismatch')

@@ -30,7 +30,7 @@ module.exports = {
                     end_date : args.end_date,
                 })
                 const result = await project.save()
-                await pubsub.publish(topics.PROJECT_ADDED, { projectAdded: "New Project : "+args.title+" has been scheduled ..!" })
+                await pubsub.publish(topics.PROJECT_ADDED, { projectAdded: args.title+" has been scheduled ..!" })
                 return result
             }else{
                 throw new UserInputError('Project already Exists')
