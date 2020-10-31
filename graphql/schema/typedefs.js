@@ -46,6 +46,21 @@ module.exports = gql`
             end_date:String!
             comments:[Comment]
         }
+
+        type Leave{
+            reason:String!
+            start_time:String!
+            end_time : String!
+            start_date:String!
+            end_date:String!
+            leave_type:String!
+        }
+
+        type Attendance{
+            member:Member
+            attendance:[Leave!]!
+        }
+
         type RootQuery{
             getMembers(id:ID): [Member],
             getMemberById(id:ID!) : Member,
@@ -56,6 +71,8 @@ module.exports = gql`
             getProjectById(id:ID!):Project
             getProjectsByMember(member:ID!):[Project],
             getProjectsByTeam(team:ID!):[Project],
+            getMemberAttendance(memberid:String!): Attendance
+            getAllMembersAttendance: [Attendance!]!
         }
         type RootMutation {
             login(email:String!,password:String!):Member!
@@ -70,6 +87,7 @@ module.exports = gql`
             assignProjectToMember(projectId:ID!,teamId:ID!,memberId:ID):Project!
             deleteMemberFromProject(id:ID!,memberId:ID!):String!
             updateProjectStatus(id:ID!,status:String!,content:String,created_by:ID!):Project!
+            createAttendance(memberid:ID!,type:String!,reason:String!,start_date:String!,end_date:String!,start_time:String!,end_time:String!):Attendance!
         }
 
         type RootSubscription {

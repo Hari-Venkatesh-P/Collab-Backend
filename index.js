@@ -5,11 +5,11 @@ const dbdetails = dbconfiguration.dbdetails
 const { checkIsValidAuth} = require('./middleware/checkTokenValidation')
 const logger = require('./lib/logger')
 
-// const URL = ' mongodb://127.0.0.1:27017/collab'
+const URL = ' mongodb://127.0.0.1:27017/collab'
 //local 
 
 
-const URL = 'mongodb+srv://'+dbdetails.username+':'+dbdetails.password+'@'+dbdetails.host+'/'+dbdetails.database+'?retryWrites=true&w=majority';
+// const URL = 'mongodb+srv://'+dbdetails.username+':'+dbdetails.password+'@'+dbdetails.host+'/'+dbdetails.database+'?retryWrites=true&w=majority';
 //live
 
 mongoose.connect(URL, {useNewUrlParser : true},(err) => {

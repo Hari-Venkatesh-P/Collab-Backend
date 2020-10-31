@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 
 const Member = require('../../../mongo/models/member')
 const Team = require('../../../mongo/models/team')
+const Attendance = require('../../../mongo/models/attendance')
+
 
 const {findTeamById} = require('../team/teamutils')
 
@@ -42,6 +44,8 @@ module.exports = {
                 const result = await member.save()
                 requestedteam.team_members.push(result._id)
                 await requestedteam.save()
+                const newAttendance = new Attendance({member_id:result._id});
+                await newAttendance.save()
                 await pubsub.publish(topics.MEMBER_ADDED, { memberAdded: args.name+" has joined us ..!" })
                 logger.info("New Member is Created..")
                 return {

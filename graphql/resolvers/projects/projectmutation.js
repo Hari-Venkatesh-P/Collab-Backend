@@ -9,10 +9,10 @@ const Team = require('../../../mongo/models/team')
 const Member = require('../../../mongo/models/member');
 
 const {pubsub,topics} = require('../subscription')
-const { findMemberById,findMemberByIds} = require('../member/memberutils')
-const { findTeamById,findTeamByIds} = require('../team/teamutils')
+const { findMemberByIds} = require('../member/memberutils')
+const { findTeamByIds} = require('../team/teamutils')
 const {findProjectAlreadyAssigned} = require('../projects/projectutils')
-const {createComment , getComment , getCommentByIds} = require('../projects/commentutils')
+const {createComment , getCommentByIds} = require('../projects/commentutils')
 const logger = require('../../../lib/logger')
 
 
